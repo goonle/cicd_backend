@@ -4,7 +4,6 @@ from rest_framework import status
 from django.contrib.auth.models import User  # Use this instead of authtoken.admin.User
 
 class RegisterViewTest(APITestCase):
-
     def test_register_user(self):
         print("✅ user.tests.py loaded")
         url = reverse('register')  # Make sure you name your URL pattern as 'register'
@@ -21,13 +20,11 @@ class RegisterViewTest(APITestCase):
         self.assertEqual(User.objects.get().username, 'testuser')
 
     def test_login_user(self):
-
-        self.user = User.objects.create_user(username='testuser', password='test123')
         print("✅ user.tests.py loaded")
         url = reverse('login')
         data = {
             'username': 'testuser',
-            'password': 'test123'
+            'password': 'testpassword123'
         }
 
         response = self.client.post(url, data, format='json')
