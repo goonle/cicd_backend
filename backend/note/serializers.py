@@ -1,0 +1,12 @@
+from django.contrib.auth.models import User
+from .models import Note
+from rest_framework import serializers
+
+class NoteSerializer(serializers.ModelSerializer):
+    username = serializers.ReadOnlyField(source='user.username')
+
+    class Meta:
+        model = Note
+        fields = ['id', 'title', 'content', 'user', 'username']
+
+
