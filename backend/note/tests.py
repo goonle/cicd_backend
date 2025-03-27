@@ -150,3 +150,52 @@ class NoteDeleteTest(APITestCase):
         response = self.client.delete(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)  # or 404 if you handle it
         print("✅ note.tests.py > Delete Note : non-existent")
+
+class NoteGetTest(APITestCase):
+    def setUp(self):
+        # User and token
+        self.user = User.objects.create_user(username='testuser', password='test123')
+        self.token = Token.objects.create(user=self.user)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+
+        # Notes
+        self.note1 = Note.objects.create(user=self.user, title="Note 1", content="Content 1")
+        self.note2 = Note.objects.create(user=self.user, title="Note 2", content="Content 2")
+
+        self.all_notes_url = '/note/'  # GET all notes
+        self.single_note_url = f'/note/{self.note1.id}/'  # GET single note
+
+    def test_get_all_notes(self):
+        response = self.client.get(self.all_notes_url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 2)
+        self.assertEqual(response.data[0]['title'], 'Note 1')
+        self.assertEqual(response.data[1]['title'], 'Note 2')
+        print("✅ note.tests.py > Get All Notes : loaded")
+
+    def test_get_single_note_successfully(self):
+        response = self.client.get(self.single_note_url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['id'], self.note1.id)
+        self.assertEqual(response.data['title'], 'Note 1')
+        print("✅ note.tests.py > Get Single Note : loaded")
+
+    def test_get_single_note_not_found(self):
+        invalid_note_url = '/note/9999/'  # Assuming this ID doesn't exist
+
+        response = self.client.get(invalid_note_url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data['detail'], 'Note not found.')
+        print("✅ note.tests.py > Get Single Note : not found")
+
+    def test_unauthenticated_access(self):
+        self.client.credentials()  # remove token
+
+        response = self.client.get(self.all_notes_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        response = self.client.get(self.single_note_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        print("✅ note.tests.py > Get All Notes : unauthorized")
