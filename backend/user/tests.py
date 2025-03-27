@@ -5,6 +5,7 @@ from django.contrib.auth.models import User  # Use this instead of authtoken.adm
 
 class RegisterViewTest(APITestCase):
     def test_register_user(self):
+        print("✅ user.tests.py loaded")
         url = reverse('register')  # Make sure you name your URL pattern as 'register'
         data = {
             'username': 'testuser',
