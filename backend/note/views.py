@@ -20,3 +20,11 @@ class NoteViewManual(APIView):
 
         note = Note.objects.create(user=user, title=title, content=content)
         return Response({"message": "Note created successfully", "note_id": note.id}, status=status.HTTP_201_CREATED)
+
+    def put(self, request):
+        note = Note.objects.get(id=request.data.get("note_id"))
+        note.title = request.data.get('title', note.title)
+        note.content = request.data.get('content', note.content)
+        note.save()
+
+        return Response({"message": "Note updated successfully"}, status=status.HTTP_200_OK)
