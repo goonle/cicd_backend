@@ -98,3 +98,55 @@ class NoteUpdateTest(APITestCase):
         response = self.client.put(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         print("✅ note.tests.py > Update Note : unauthorized")
+
+class NoteDeleteTest(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='test123')
+        self.token = Token.objects.create(user=self.user)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+
+        # Create a note to delete
+        self.note = Note.objects.create(
+            user=self.user,
+            title="Note to Delete",
+            content="This note will be deleted."
+        )
+        # Create a note to delete 2
+        self.note2 = Note.objects.create(
+            user=self.user,
+            title="Note to Delete 2",
+            content="This note will be deleted."
+        )
+
+        self.url = '/note/'  # Your delete endpoint
+
+    def test_delete_note_successfully(self):
+        data = {
+            "note_id": self.note.id
+        }
+
+        response = self.client.delete(self.url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['message'], "Note deleted successfully")
+        self.assertFalse(Note.objects.filter(id=self.note.id).exists())
+        print("✅ note.tests.py > Delete Note : deleted")
+
+    def test_delete_note_unauthorized(self):
+        self.client.credentials()  # Remove auth
+        data = {
+            "note_id": self.note2.id
+        }
+
+        response = self.client.delete(self.url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        print("✅ note.tests.py > Delete Note : unauthorized")
+
+    def test_delete_nonexistent_note(self):
+        data = {
+            "note_id": 9999  # A note ID that doesn't exist
+        }
+
+        response = self.client.delete(self.url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)  # or 404 if you handle it
+        print("✅ note.tests.py > Delete Note : non-existent")
