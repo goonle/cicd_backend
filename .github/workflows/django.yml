@@ -31,3 +31,4 @@ jobs:
 
       - name: Run Django tests
         run: python ./backend/manage.py test
+        working-directory: ./backend
