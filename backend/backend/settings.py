@@ -71,7 +71,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'backend.wsgi.application'
+WSGI_APPLICATION = 'backend.wsgi.app'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -174,3 +174,4 @@ CORS_ALLOW_HEADERS = [
     "authorization",
     "content-type",
 ]
+CORS_ALLOW_ALL_ORIGINS = True
