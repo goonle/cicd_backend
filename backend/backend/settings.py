@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-@obf_y=4*8jejy$ju27_r@+_ynvuvjs03!e6p@22yyi%1tkd($
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -142,3 +142,35 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # React (local)
+    "https://ci-cd-assignment-frontend.vercel.app",  # Production frontend
+]
+# Allow credentials (important if using authentication)
+CORS_ALLOW_CREDENTIALS = True
+
+# Allowed HTTP methods (optional, but recommended)
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "DELETE",
+    "OPTIONS",
+]
+
+# Allowed headers (optional, but useful for Authorization headers)
+CORS_ALLOW_HEADERS = [
+    "authorization",
+    "content-type",
+]

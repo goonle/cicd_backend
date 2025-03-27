@@ -1,6 +1,7 @@
 from rest_framework import generics
 from rest_framework.authtoken.admin import User
-from rest_framework.permissions import AllowAny
+from rest_framework.authtoken.models import Token
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -31,3 +32,11 @@ class LoginView(APIView):
         token, _ = Token.objects.get_or_create(user=user)
 
         return Response({"token": token.key}, status=200)
+    
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]  # Ensure only authenticated users can log out
+
+    def post(self, request):
+        request.user.auth_token.delete()  # Deletes the user's auth token
+        return Response({"message": "Successfully logged out"}, status=204)  # No content response
