@@ -2,7 +2,7 @@ from rest_framework import generics
 from rest_framework.authtoken.admin import User
 from rest_framework.permissions import AllowAny
 
-from .serializers import UserSerializer
+from backend.user.serializers import UserSerializer
 
 
 class RegisterView(generics.CreateAPIView):
