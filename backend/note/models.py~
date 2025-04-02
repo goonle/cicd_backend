@@ -11,6 +11,6 @@ class Note(models.Model):
         (3, 'Done'),
     ]
     status = models.IntegerField(choices=status_item, default=1)
-
+    
     def __str__(self):
         return self.title
