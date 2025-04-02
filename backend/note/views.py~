@@ -28,6 +28,7 @@ class NoteViewManual(APIView):
         note = Note.objects.get(id=request.data.get("note_id"))
         note.title = request.data.get('title', note.title)
         note.content = request.data.get('content', note.content)
+        note.status = request.data.get('status', note.status)
         note.save()
 
         return Response({"message": "Note updated successfully"}, status=status.HTTP_200_OK)
@@ -42,7 +43,7 @@ class NoteViewManual(APIView):
         serializer = NoteSerializer(notes, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
 class NoteGetOneView(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
