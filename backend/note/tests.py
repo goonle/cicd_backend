@@ -99,6 +99,31 @@ class NoteUpdateTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         print("✅ note.tests.py > Update Note : unauthorized")
 
+    def test_update_note_change_status(self):
+        data = {
+            "note_id": self.note.id,
+            "status": 2
+        }
+
+        response = self.client.put(self.url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.note.refresh_from_db()
+        self.assertEqual(self.note.status, 2)
+        print("✅ note.tests.py > Update Note : change status")
+
+    def test_update_note_check_default(self):
+        data = {
+            "note_id": self.note.id,
+        }
+
+        response = self.client.put(self.url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.note.refresh_from_db()
+        self.assertEqual(self.note.status, 1)
+        print("✅ note.tests.py > Update Note : check default")
+
 class NoteDeleteTest(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='testuser', password='test123')

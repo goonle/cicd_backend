@@ -99,6 +99,31 @@ class NoteUpdateTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         print("✅ note.tests.py > Update Note : unauthorized")
 
+    def test_update_note_change_status(self):
+        data = {
+            "note_id": self.note.id,
+            "status": 2
+        }
+
+        response = self.client.put(self.url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.note.refresh_from_db()
+        self.assertEqual(self.note.status, 2)
+        print("✅ note.tests.py > Update Note : change status")
+
+    def test_update_note_check_default(self):
+        data = {
+            "note_id": self.note.id,
+        }
+
+        response = self.client.put(self.url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.note.refresh_from_db()
+        self.assertEqual(self.note.status, 2)
+        print("✅ note.tests.py > Update Note : change status")
+
 class NoteDeleteTest(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='testuser', password='test123')
@@ -177,25 +202,25 @@ class NoteGetTest(APITestCase):
     def test_get_single_note_successfully(self):
         response = self.client.get(self.single_note_url)
 
-            self.assertEqual(response.status_code, status.HTTP_200_OK)
-            self.assertEqual(response.data['id'], self.note1.id)
-            self.assertEqual(response.data['title'], 'Note 1')
-            print("✅ note.tests.py > Get Single Note : loaded")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['id'], self.note1.id)
+        self.assertEqual(response.data['title'], 'Note 1')
+        print("✅ note.tests.py > Get Single Note : loaded")
 
-        def test_get_single_note_not_found(self):
-            invalid_note_url = '/note/9999/'  # Assuming this ID doesn't exist
+    def test_get_single_note_not_found(self):
+        invalid_note_url = '/note/9999/'  # Assuming this ID doesn't exist
 
-            response = self.client.get(invalid_note_url)
-            self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-            self.assertEqual(response.data['detail'], 'Note not found.')
-            print("✅ note.tests.py > Get Single Note : not found")
+        response = self.client.get(invalid_note_url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data['detail'], 'Note not found.')
+        print("✅ note.tests.py > Get Single Note : not found")
 
-        def test_unauthenticated_access(self):
-            self.client.credentials()  # remove token
+    def test_unauthenticated_access(self):
+        self.client.credentials()  # remove token
 
-            response = self.client.get(self.all_notes_url)
-            self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        response = self.client.get(self.all_notes_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-            response = self.client.get(self.single_note_url)
-            self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-            print("✅ note.tests.py > Get All Notes : unauthorized")
+        response = self.client.get(self.single_note_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        print("✅ note.tests.py > Get All Notes : unauthorized")
