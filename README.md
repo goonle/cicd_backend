@@ -79,10 +79,10 @@ Authorization: Token your_token_here
 | Method | Endpoint | Description |
 |--- | --- |--- |
 | Get | /note/ | Get all notes for the authenticated user |
-| Get | /note/<id>/ | Get a specific note by ID |
+| Get | /note/`<id>`/ | Get a specific note by ID |
 | Post | /note/ | Create a new note |
 | Put | /note/ | Update an existing note(by note_id) |
-| Delete | /note/<id>/ | Delete a note by ID |
+| Delete | /note/`<id>`/ | Delete a note by ID |
 > ### 🔒 All endpoints require authentication. Each user can only access their own notes.
 
 ---
